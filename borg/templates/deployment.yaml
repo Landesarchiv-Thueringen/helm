@@ -33,13 +33,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: gui
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.imageRegistry }}/{{ .Values.imageRootRepository }}/{{ .Values.gui.image.repository }}:{{ .Values.gui.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.gui.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
