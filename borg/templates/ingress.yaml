@@ -35,9 +35,9 @@ spec:
             {{- end }}
             backend:
               service:
-                name: {{ include "borg.fullname" $ }}
+                name: {{ include "borg.fullname" $ }}-gui
                 port:
-                  number: {{ $.Values.service.port }}
+                  number: {{ $.Values.gui.service.port }}
           {{- end }}
     {{- end }}
 {{- end }}

@@ -1,15 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "borg.fullname" . }}
+  name: {{ include "borg.fullname" . }}-gui
   labels:
+    app.kubernetes.io/component: gui
     {{- include "borg.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.gui.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.gui.service.port }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
+    app.kubernetes.io/component: gui
     {{- include "borg.selectorLabels" . | nindent 4 }}
