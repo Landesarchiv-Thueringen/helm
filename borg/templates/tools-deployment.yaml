@@ -47,7 +47,7 @@ spec:
           imagePullPolicy: {{ $.Values.imagePullPolicy }}
           ports:
             - name: http
-              containerPort: {{ $tool.service.port }}
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -66,7 +66,7 @@ spec:
               mountPath: /borg/file-store
           env:
             - name: PORT
-              value: {{ $tool.service.port | quote }}
+              value: "80"
             - name: GIN_MODE
               value: release
       volumes:

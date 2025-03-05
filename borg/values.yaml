@@ -26,11 +26,6 @@ nameOverride: ""
 fullnameOverride: ""
 
 gui:
-  service:
-    # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-    type: ClusterIP
-    # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-    port: 80
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -44,19 +39,11 @@ gui:
     #   memory: 128Mi
 
 server:
-  service:
-    # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
-    type: ClusterIP
-    # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-    port: 80
   resources: {}
 
 tools:
   droid:
     enabled: true
-    service:
-      type: ClusterIP
-      port: 80
     resources: {}
     configurations:
       - toolName: "DROID"
@@ -77,9 +64,6 @@ tools:
               defaultValue: 0.9
   tika:
     enabled: true
-    service:
-      type: ClusterIP
-      port: 80
     resources: {}
     configurations:
       - toolName: "Tika"
@@ -97,9 +81,6 @@ tools:
               defaultValue: 0.9
   magika:
     enabled: true
-    service:
-      type: ClusterIP
-      port: 80
     resources: {}
     configurations:
       - toolName: "Magika"
@@ -114,9 +95,6 @@ tools:
               providedByTool: true
   jhove:
     enabled: true
-    service:
-      type: ClusterIP
-      port: 80
     resources: {}
     configurations:
       - toolName: "JHOVE (PDF-Modul)"
@@ -263,9 +241,6 @@ tools:
               defaultValue: 0.8
   verapdf:
     enabled: true
-    service:
-      type: ClusterIP
-      port: 80
     resources: {}
     configurations:
       - toolName: "veraPDF (PDF/A-1a-Profil)"
@@ -341,9 +316,6 @@ tools:
               defaultValue: 0.3 # temporary run for every PDF file, mostly incorrect
   odf-validator:
     enabled: true
-    service:
-      type: ClusterIP
-      port: 80
     resources: {}
     configurations:
       - toolName: "ODF Validator"
@@ -358,9 +330,6 @@ tools:
               defaultValue: 1.0
   ooxml-validator:
     enabled: true
-    service:
-      type: ClusterIP
-      port: 80
     resources: {}
     configurations:
       - toolName: "OOXML-Validator"

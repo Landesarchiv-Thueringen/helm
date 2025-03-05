@@ -37,7 +37,7 @@ spec:
               service:
                 name: {{ include "borg.fullname" $ }}-gui
                 port:
-                  number: {{ $.Values.gui.service.port }}
+                  number: 80
           {{- end }}
     {{- end }}
 {{- end }}

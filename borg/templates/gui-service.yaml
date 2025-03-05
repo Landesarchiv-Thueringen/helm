@@ -6,9 +6,9 @@ metadata:
     app.kubernetes.io/component: gui
     {{- include "borg.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.gui.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ .Values.gui.service.port }}
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http

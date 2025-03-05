@@ -8,9 +8,9 @@ metadata:
     app.kubernetes.io/component: tool-{{ $key }}
     {{- include "borg.labels" $ | nindent 4 }}
 spec:
-  type: {{ $tool.service.type }}
+  type: ClusterIP
   ports:
-    - port: {{ $tool.service.port }}
+    - port: 80
       targetPort: http
       protocol: TCP
       name: http
