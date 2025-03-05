@@ -117,6 +117,13 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+shareVolume:
+  resources:
+    requests:
+      storage: 8Gi
+  storageClassName: ""
+  selector: {}
+
 nodeSelector: {}
 
 tolerations: []
