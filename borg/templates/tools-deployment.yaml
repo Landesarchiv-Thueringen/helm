@@ -43,8 +43,8 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ $.Values.imageRegistry }}/{{ $.Values.imageRootRepository }}/{{ $tool.image.repository }}:{{ $tool.image.tag | default $.Chart.AppVersion }}"
-          imagePullPolicy: {{ $tool.image.pullPolicy }}
+          image: "{{ $.Values.imageRegistry }}/{{ $.Values.imageRootRepository }}/{{ $key }}:{{ $.Values.imageTag | default $.Chart.AppVersion }}"
+          imagePullPolicy: {{ $.Values.imagePullPolicy }}
           ports:
             - name: http
               containerPort: {{ $tool.service.port }}

@@ -41,8 +41,8 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: "{{ .Values.imageRegistry }}/{{ .Values.imageRootRepository }}/{{ .Values.gui.image.repository }}:{{ .Values.gui.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.gui.image.pullPolicy }}
+          image: "{{ .Values.imageRegistry }}/{{ .Values.imageRootRepository }}/gui:{{ .Values.imageTag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.gui.service.port }}
