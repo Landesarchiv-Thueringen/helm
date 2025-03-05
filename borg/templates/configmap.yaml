@@ -4,4 +4,4 @@ metadata:
   name: {{ include "borg.fullname" . }}-configmap
 data:
   server_config.yml: |-
-    {{- .Files.Get "server_config.yml" | nindent 4 }}
+    {{- include "borg.serverConfig" . | nindent 4 }}

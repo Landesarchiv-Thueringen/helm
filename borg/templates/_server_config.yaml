@@ -1,21 +1,15 @@
+{{- define "borg.serverConfig" -}}
 tools:
+  {{- if .Values.tools.droid.enabled }}
   - toolName: "DROID"
     toolVersion: "6.8.0"
-    endpoint: "http://droid/identify-file-format"
+    endpoint: http://{{ include "borg.fullname" $ }}-droid/identify-file-format
+    {{- with .Values.tools.droid.features }}
     features:
-      - key: "puid"
-        confidence:
-          defaultValue: 0.9
-      - key: "mimeType"
-        confidence:
-          defaultValue: 0.9
-      - key: "formatName"
-        confidence:
-          defaultValue: 0.9
-      - key: "formatVersion"
-        confidence:
-          defaultValue: 0.9
-
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.tools.tika.enabled }}
   - toolName: "Tika"
     toolVersion: "2.9.2"
     endpoint: "http://tika/extract-metadata"
@@ -29,7 +23,8 @@ tools:
       - key: "formatVersion"
         confidence:
           defaultValue: 0.9
-
+  {{- end }}
+  {{- if .Values.tools.magika.enabled }}
   - toolName: "Magika"
     toolVersion: "0.6.0"
     endpoint: "http://magika/identify-file-format"
@@ -40,7 +35,8 @@ tools:
       - key: "isText"
         confidence:
           providedByTool: true
-
+  {{- end }}
+  {{- if .Values.tools.jhove.enabled }}
   - toolName: "JHOVE (PDF-Modul)"
     toolVersion: "1.30.1"
     endpoint: "http://jhove/validate/pdf"
@@ -90,7 +86,6 @@ tools:
             - globalFeature: formatVersion
               regEx: "PDF/A"
               value: 0.0 # no PDF/A validator
-
   - toolName: "JHOVE (HTML-Modul)"
     toolVersion: "1.30.1"
     endpoint: "http://jhove/validate/html"
@@ -117,7 +112,6 @@ tools:
       - key: "formatVersion"
         confidence:
           defaultValue: 0.8
-
   - toolName: "JHOVE (TIFF-Modul)"
     toolVersion: "1.30.1"
     endpoint: "http://jhove/validate/tiff"
@@ -139,7 +133,6 @@ tools:
       - key: "formatVersion"
         confidence:
           defaultValue: 0.8
-
   - toolName: "JHOVE (JPEG-Modul)"
     toolVersion: "1.30.1"
     endpoint: "http://jhove/validate/jpeg"
@@ -165,7 +158,6 @@ tools:
       - key: "formatVersion"
         confidence:
           defaultValue: 0.8
-
   - toolName: "JHOVE (JPEG2000-Modul)"
     toolVersion: "1.30.1"
     endpoint: "http://jhove/validate/jpeg2000"
@@ -187,7 +179,8 @@ tools:
       - key: "formatVersion"
         confidence:
           defaultValue: 0.8
-
+  {{- end }}
+  {{- if .Values.tools.veraPdf.enabled }}
   - toolName: "veraPDF (PDF/A-1a-Profil)"
     toolVersion: "1.26.2"
     endpoint: "http://verapdf/validate/1a"
@@ -200,7 +193,6 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 1.0
-
   - toolName: "veraPDF (PDF/A-1b-Profil)"
     toolVersion: "1.26.2"
     endpoint: "http://verapdf/validate/1b"
@@ -213,7 +205,6 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 1.0
-
   - toolName: "veraPDF (PDF/A-2a-Profil)"
     toolVersion: "1.26.2"
     endpoint: "http://verapdf/validate/2a"
@@ -226,7 +217,6 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 1.0
-
   - toolName: "veraPDF (PDF/A-2b-Profil)"
     toolVersion: "1.26.2"
     endpoint: "http://verapdf/validate/2b"
@@ -239,7 +229,6 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 1.0
-
   - toolName: "veraPDF (PDF/A-2u-Profil)"
     toolVersion: "1.26.2"
     endpoint: "http://verapdf/validate/2u"
@@ -252,7 +241,6 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 1.0
-
   - toolName: "veraPDF (PDF/UA-Profil)"
     toolVersion: "1.26.2"
     endpoint: "http://verapdf/validate/ua1"
@@ -264,7 +252,8 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 0.3 # temporary run for every PDF file, mostly incorrect
-
+  {{- end }}
+  {{- if .Values.tools.odfValidator.enabled }}
   - toolName: "ODF Validator"
     toolVersion: "0.12.0"
     endpoint: "http://odf-validator/validate"
@@ -275,7 +264,8 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 1.0
-
+  {{- end }}
+  {{- if .Values.tools.ooxmlValidator.enabled }}
   - toolName: "OOXML-Validator"
     toolVersion: "2.1.5"
     endpoint: "http://ooxml-validator/validate"
@@ -286,3 +276,5 @@ tools:
       - key: "valid"
         confidence:
           defaultValue: 1.0
+  {{- end }}
+{{- end }}
