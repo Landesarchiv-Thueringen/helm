@@ -58,7 +58,6 @@ server:
     port: 80
   resources: {}
 
-
 tools:
   droid:
     enabled: true
@@ -70,32 +69,345 @@ tools:
       type: ClusterIP
       port: 80
     resources: {}
-    features:
-      - key: "puid"
-        confidence:
-          defaultValue: 0.9
-      - key: "mimeType"
-        confidence:
-          defaultValue: 0.9
-      - key: "formatName"
-        confidence:
-          defaultValue: 0.9
-      - key: "formatVersion"
-        confidence:
-          defaultValue: 0.9
+    configurations:
+      - toolName: "DROID"
+        toolVersion: "6.8.0"
+        path: "/identify-file-format"
+        features:
+          - key: "puid"
+            confidence:
+              defaultValue: 0.9
+          - key: "mimeType"
+            confidence:
+              defaultValue: 0.9
+          - key: "formatName"
+            confidence:
+              defaultValue: 0.9
+          - key: "formatVersion"
+            confidence:
+              defaultValue: 0.9
   tika:
-    enabled: false
+    enabled: true
+    image:
+      repository: tika
+      pullPolicy: IfNotPresent
+      tag: ""
+    service:
+      type: ClusterIP
+      port: 80
+    resources: {}
+    configurations:
+      - toolName: "Tika"
+        toolVersion: "2.9.2"
+        path: "/extract-metadata"
+        features:
+          - key: "mimeType"
+            confidence:
+              defaultValue: 0.9
+          - key: "encoding"
+            confidence:
+              defaultValue: 0.9
+          - key: "formatVersion"
+            confidence:
+              defaultValue: 0.9
   magika:
-    enabled: false
+    enabled: true
+    image:
+      repository: magika
+      pullPolicy: IfNotPresent
+      tag: ""
+    service:
+      type: ClusterIP
+      port: 80
+    resources: {}
+    configurations:
+      - toolName: "Magika"
+        toolVersion: "0.6.0"
+        path: "/identify-file-format"
+        features:
+          - key: "mimeType"
+            confidence:
+              providedByTool: true
+          - key: "isText"
+            confidence:
+              providedByTool: true
   jhove:
-    enabled: false
-  veraPdf:
-    enabled: false
-  odfValidator:
-    enabled: false
-  ooxmlValidator:
-    enabled: false
-
+    enabled: true
+    image:
+      repository: jhove
+      pullPolicy: IfNotPresent
+      tag: ""
+    service:
+      type: ClusterIP
+      port: 80
+    resources: {}
+    configurations:
+      - toolName: "JHOVE (PDF-Modul)"
+        toolVersion: "1.30.1"
+        path: "/validate/pdf"
+        trigger:
+          - feature: "puid"
+            regEx: "^fmt/14$" # PDF 1.0
+          - feature: "puid"
+            regEx: "^fmt/15$" # PDF 1.1
+          - feature: "puid"
+            regEx: "^fmt/16$" # PDF 1.2
+          - feature: "puid"
+            regEx: "^fmt/17$" # PDF 1.3
+          - feature: "puid"
+            regEx: "^fmt/18$" # PDF 1.4
+          - feature: "puid"
+            regEx: "^fmt/19$" # PDF 1.5
+          - feature: "puid"
+            regEx: "^fmt/20$" # PDF 1.6
+          - feature: "puid"
+            regEx: "^fmt/276$" # PDF 1.7
+        features:
+          - key: "wellFormed"
+            confidence:
+              defaultValue: 1.0
+              conditions:
+                - globalFeature: formatVersion
+                  regEx: "PDF/A"
+                  value: 0.0 # no PDF/A validator
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+              conditions:
+                - globalFeature: formatVersion
+                  regEx: "PDF/A"
+                  value: 0.0 # no PDF/A validator
+          - key: "formatName"
+            confidence:
+              defaultValue: 0.8
+              conditions:
+                - globalFeature: formatVersion
+                  regEx: "PDF/A"
+                  value: 0.0 # no PDF/A validator
+          - key: "formatVersion"
+            confidence:
+              defaultValue: 0.8
+              conditions:
+                - globalFeature: formatVersion
+                  regEx: "PDF/A"
+                  value: 0.0 # no PDF/A validator
+      - toolName: "JHOVE (HTML-Modul)"
+        toolVersion: "1.30.1"
+        path: "/validate/html"
+        trigger:
+          - feature: "mimeType"
+            regEx: "html"
+          - feature: "puid"
+            regEx: "^fmt/98$" # HTML 3.2
+          - feature: "puid"
+            regEx: "^fmt/99$" # HTML 4.0
+          - feature: "puid"
+            regEx: "^fmt/100$" # HTML 4.01
+          # 06.11.2023: JHOVE HTML-Hul doesn't support HTML 5
+        features:
+          - key: "wellFormed"
+            confidence:
+              defaultValue: 1.0
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+          - key: "formatName"
+            confidence:
+              defaultValue: 0.8
+          - key: "formatVersion"
+            confidence:
+              defaultValue: 0.8
+      - toolName: "JHOVE (TIFF-Modul)"
+        toolVersion: "1.30.1"
+        path: "/validate/tiff"
+        trigger:
+          - feature: "mimeType"
+            regEx: "tiff"
+          - feature: "puid"
+            regEx: "^fmt/153$" # TIFF
+        features:
+          - key: "wellFormed"
+            confidence:
+              defaultValue: 1.0
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+          - key: "formatName"
+            confidence:
+              defaultValue: 0.8
+          - key: "formatVersion"
+            confidence:
+              defaultValue: 0.8
+      - toolName: "JHOVE (JPEG-Modul)"
+        toolVersion: "1.30.1"
+        path: "/validate/jpeg"
+        trigger:
+          - feature: "mimeType"
+            regEx: "jpeg$"
+          - feature: "puid"
+            regEx: "^fmt/42$" # JPEG File Interchange Format 1.00
+          - feature: "puid"
+            regEx: "^fmt/43$" # JPEG File Interchange Format 1.01
+          - feature: "puid"
+            regEx: "^fmt/44$" # JPEG File Interchange Format 1.02
+        features:
+          - key: "wellFormed"
+            confidence:
+              defaultValue: 1.0
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+          - key: "formatName"
+            confidence:
+              defaultValue: 0.8
+          - key: "formatVersion"
+            confidence:
+              defaultValue: 0.8
+      - toolName: "JHOVE (JPEG2000-Modul)"
+        toolVersion: "1.30.1"
+        path: "/validate/jpeg2000"
+        trigger:
+          - feature: "mimeType"
+            regEx: "jp2$"
+          - feature: "puid"
+            regEx: "^x-fmt/392$" # JP2 (JPEG 2000 part 1)
+        features:
+          - key: "wellFormed"
+            confidence:
+              defaultValue: 1.0
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+          - key: "formatName"
+            confidence:
+              defaultValue: 0.8
+          - key: "formatVersion"
+            confidence:
+              defaultValue: 0.8
+  vera-pdf:
+    enabled: true
+    image:
+      repository: verapdf
+      pullPolicy: IfNotPresent
+      tag: ""
+    service:
+      type: ClusterIP
+      port: 80
+    resources: {}
+    configurations:
+      - toolName: "veraPDF (PDF/A-1a-Profil)"
+        toolVersion: "1.26.2"
+        path: "/validate/1a"
+        trigger:
+          - feature: "formatVersion"
+            regEx: "PDF/A-1a"
+          - feature: "puid"
+            regEx: "^fmt/95$" # PDF/A-1a
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+      - toolName: "veraPDF (PDF/A-1b-Profil)"
+        toolVersion: "1.26.2"
+        path: "/validate/1b"
+        trigger:
+          - feature: "formatVersion"
+            regEx: "PDF/A-1b"
+          - feature: "puid"
+            regEx: "^fmt/354$" # PDF/A-1b
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+      - toolName: "veraPDF (PDF/A-2a-Profil)"
+        toolVersion: "1.26.2"
+        path: "/validate/2a"
+        trigger:
+          - feature: "formatVersion"
+            regEx: "PDF/A-2a"
+          - feature: "puid"
+            regEx: "^fmt/476$" # PDF/A-2a
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+      - toolName: "veraPDF (PDF/A-2b-Profil)"
+        toolVersion: "1.26.2"
+        path: "/validate/2b"
+        trigger:
+          - feature: "formatVersion"
+            regEx: "PDF/A-2b"
+          - feature: "puid"
+            regEx: "^fmt/477$" # PDF/A-2b
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+      - toolName: "veraPDF (PDF/A-2u-Profil)"
+        toolVersion: "1.26.2"
+        path: "/validate/2u"
+        trigger:
+          - feature: "formatVersion"
+            regEx: "PDF/A-2u"
+          - feature: "puid"
+            regEx: "^fmt/478$" # PDF/A-2u
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+      - toolName: "veraPDF (PDF/UA-Profil)"
+        toolVersion: "1.26.2"
+        path: "/validate/ua1"
+        trigger:
+          - # PDF/UA has no entry in the PRONOM database
+            feature: "mimeType"
+            regEx: "pdf"
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 0.3 # temporary run for every PDF file, mostly incorrect
+  odf-validator:
+    enabled: true
+    image:
+      repository: odf-validator
+      pullPolicy: IfNotPresent
+      tag: ""
+    service:
+      type: ClusterIP
+      port: 80
+    resources: {}
+    configurations:
+      - toolName: "ODF Validator"
+        toolVersion: "0.12.0"
+        path: "/validate"
+        trigger:
+          - feature: "mimeType"
+            regEx: "^application/vnd\\.oasis\\.opendocument\\."
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
+  ooxml-validator:
+    enabled: true
+    image:
+      repository: ooxml-validator
+      pullPolicy: IfNotPresent
+      tag: ""
+    service:
+      type: ClusterIP
+      port: 80
+    resources: {}
+    configurations:
+      - toolName: "OOXML-Validator"
+        toolVersion: "2.1.5"
+        path: "/validate"
+        trigger:
+          - feature: "mimeType"
+            regEx: "^application/vnd\\.openxmlformats-officedocument\\."
+        features:
+          - key: "valid"
+            confidence:
+              defaultValue: 1.0
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
@@ -129,7 +441,7 @@ securityContext: {}
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
-  enabled: false
+  enabled: true
   className: ""
   annotations: {}
     # kubernetes.io/ingress.class: nginx
