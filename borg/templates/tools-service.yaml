@@ -1,0 +1,22 @@
+{{- range $key, $tool := .Values.tools }}
+{{- if $tool.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "borg.fullname" $ }}-{{ $key }}
+  labels:
+    app.kubernetes.io/component: tool-{{ $key }}
+    {{- include "borg.labels" $ | nindent 4 }}
+spec:
+  type: {{ $tool.service.type }}
+  ports:
+    - port: {{ $tool.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/component: tool-{{ $key }}
+    {{- include "borg.selectorLabels" $ | nindent 4 }}
+---
+{{- end }}
+{{- end }}
