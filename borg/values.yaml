@@ -2,7 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+# This will set the replicaset count for all deployments.
+#
+# More information can be found here:
+# https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
+#
+# FIXME: Deploying pods on a multi-node cluster is not tested. Adjustments to
+# way the share volume is allocated and mounted may be needed.
 replicaCount: 1
 
 # Common configuration for all used images.
