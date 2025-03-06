@@ -1,0 +1,95 @@
+{{- if .Values.mongodb.create }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "x-man.fullname" . }}-mongodb
+  labels:
+    app.kubernetes.io/component: mongodb
+    {{- include "x-man.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: mongodb
+      {{- include "x-man.selectorLabels" . | nindent 6 }}
+    serviceName: {{ include "x-man.fullname" . }}-mongodb
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app.kubernetes.io/component: mongodb
+        {{- include "x-man.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "x-man.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: mongodb
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          image: {{ .Values.mongodb.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          ports:
+            - name: mongodb
+              containerPort: 27017
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+          {{- with .Values.mongodb.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: {{ .Values.mongodb.username | quote }}
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: {{ .Values.mongodb.password | quote }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOncePod" ]
+      {{- with .Values.mongodb.storageClassName }}
+      storageClassName: {{ . }}
+      {{- end }}
+      resources:
+        {{- toYaml .Values.mongodb.volumeClaimResources | nindent 8 }}
+{{- end }}

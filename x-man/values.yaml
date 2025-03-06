@@ -23,10 +23,28 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+timezone: Europe/Berlin
+
 server:
   resources: {}
   volumes: []
   volumeMounts: []
+mongodb:
+  create: true
+  # -- if create: true
+  image: docker.io/mongo:8.0
+  resources: {}
+  storageClassName: ""
+  volumeClaimResources:
+    requests:
+      storage: 1Gi
+  # -- if create: false
+  url: ""
+  # -- end
+  username: mongo
+  password: mongo
+  database: app
+
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:

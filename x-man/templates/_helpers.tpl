@@ -60,3 +60,12 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+The origin (protocol + host + port) of the deployed application as defined by the first entry of .Values.ingress.hosts
+*/}}
+{{- define "x-man.origin" -}}
+{{- with .Values.ingress.hosts -}}
+http{{ if $.Values.ingress.tls }}s{{ end }}://{{ (index . 0).host }}
+{{- end }}
+{{- end }}

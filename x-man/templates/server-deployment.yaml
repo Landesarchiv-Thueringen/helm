@@ -61,6 +61,27 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          env:
+            - name: PORT
+              value: "80"
+            - name: GIN_MODE
+              value: release
+            - name: TZ
+              value: {{ .Values.timezone }}
+            - name: ORIGIN
+              value: {{ include "x-man.origin" . }}
+            - name: MONGODB_URL
+              {{- if .Values.mongodb.create }}
+              value: mongodb://{{ include "x-man.fullname" . }}-mongodb:27017
+              {{- else }}
+              value: {{ .Values.mongodb.url }}
+              {{- end }}
+            - name: MONGODB_USER
+              value: {{ .Values.mongodb.username }}
+            - name: MONGODB_PASSWORD
+              value: {{ .Values.mongodb.password }}
+            - name: MONGODB_DB
+              value: {{ .Values.mongodb.database }}
       {{- with .Values.server.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
