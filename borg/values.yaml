@@ -368,9 +368,11 @@ podAnnotations: {}
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
+# Pod security context for all deployments.
 podSecurityContext: {}
   # fsGroup: 2000
 
+# Security context for all deployments.
 securityContext: {}
   # capabilities:
   #   drop:
@@ -405,8 +407,11 @@ shareVolume:
   storageClassName: ""
   selector: {}
 
+# Node selector for all deployments.
 nodeSelector: {}
 
+# Tolerations for all deployments.
 tolerations: []
 
+# Affinity for all deployments.
 affinity: {}
