@@ -15,10 +15,11 @@ spec:
       {{- include "borg.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/server-config: {{ include "borg.serverConfig" . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: server
         {{- include "borg.labels" . | nindent 8 }}
