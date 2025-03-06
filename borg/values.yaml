@@ -390,14 +390,6 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
 # The share volume is used to transfer data from the server to tools. It does
 # not need to be persistent, but it needs to be shared between pods.
 shareVolume:
