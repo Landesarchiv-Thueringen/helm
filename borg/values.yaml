@@ -398,10 +398,12 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# The share volume is used to transfer data from the server to tools. It does
+# not need to be persistent, but it needs to be shared between pods.
 shareVolume:
   resources:
     requests:
-      storage: 8Gi
+      storage: 1Gi
   storageClassName: ""
   selector: {}
 
