@@ -73,10 +73,10 @@ spec:
             - name: ORIGIN
               value: {{ include "x-man.origin" . }}
             - name: MONGODB_URL
-              {{- if .Values.mongodb.create }}
-              value: mongodb://{{ include "x-man.fullname" . }}-mongodb:27017
-              {{- else }}
+              {{- if .Values.mongodb.url }}
               value: {{ .Values.mongodb.url }}
+              {{- else }}
+              value: mongodb://{{ include "x-man.fullname" . }}-mongodb:27017
               {{- end }}
             - name: MONGODB_USER
               value: {{ .Values.mongodb.username }}
