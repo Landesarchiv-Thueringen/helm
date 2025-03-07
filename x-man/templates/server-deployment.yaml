@@ -68,7 +68,7 @@ spec:
             - name: GIN_MODE
               value: release
             - name: TZ
-              value: {{ .Values.timezone }}
+              value: {{ .Values.timezone | quote }}
             - name: ORIGIN
               value: {{ include "x-man.origin" . }}
             - name: LOGIN_TOKEN_LIFETIME_DAYS
@@ -78,30 +78,32 @@ spec:
             - name: DELETE_ERRORS_AFTER_DAYS
               value: {{ .Values.app.deleteErrorsAfterDays | quote }}
             - name: INSTITUTION_NAME
-              value: {{ .Values.app.institutionName }}
+              value: {{ .Values.app.institutionName | quote }}
             - name: INSTITUTION_ABBREVIATION
-              value: {{ .Values.app.institutionAbbreviation }}
+              value: {{ .Values.app.institutionAbbreviation | quote }}
             - name: APPRAISAL_LEVEL
-              value: {{ .Values.app.appraisalLevel }}
+              value: {{ .Values.app.appraisalLevel | quote }}
             - name: MAX_RECORD_DEPTH
               value: {{ .Values.app.maxRecordDepth | quote }}
+            - name: POST_OFFICE_EMAIL
+              value: {{ .Values.app.postOfficeEmail | quote }}
             - name: ARCHIVE_TARGET
               value: filesystem
             - name: MONGODB_URL
               {{- if .Values.mongodb.url }}
-              value: {{ .Values.mongodb.url }}
+              value: {{ .Values.mongodb.url | quote }}
               {{- else }}
               value: mongodb://{{ include "x-man.fullname" . }}-mongodb:27017
               {{- end }}
             - name: MONGODB_USER
-              value: {{ .Values.mongodb.user }}
+              value: {{ .Values.mongodb.user | quote }}
             - name: MONGODB_PASSWORD
-              value: {{ .Values.mongodb.password }}
+              value: {{ .Values.mongodb.password | quote }}
             - name: MONGODB_DB
-              value: {{ .Values.mongodb.database }}
+              value: {{ .Values.mongodb.database | quote }}
             - name: LDAP_URL
               {{- if .Values.ldap.url }}
-              value: {{ .Values.ldap.url }}
+              value: {{ .Values.ldap.url | quote }}
               {{- else }}
               value: ldap://{{ include "x-man.fullname" . }}-ldap:10389
               {{- end }}
@@ -112,17 +114,27 @@ spec:
               value: "true"
               {{- end }}
             - name: LDAP_CONFIG
-              value: {{ .Values.ldap.ldapConfig }}
+              value: {{ .Values.ldap.ldapConfig | quote }}
             - name: LDAP_BASE_DN
-              value: {{ .Values.ldap.baseDn }}
+              value: {{ .Values.ldap.baseDn | quote }}
             - name: LDAP_USER
-              value: {{ .Values.ldap.user }}
+              value: {{ .Values.ldap.user | quote }}
             - name: LDAP_PASSWORD
-              value: {{ .Values.ldap.password }}
+              value: {{ .Values.ldap.password | quote }}
             - name: LDAP_ACCESS_GROUP
-              value: {{ .Values.ldap.accessGroup }}
+              value: {{ .Values.ldap.accessGroup | quote }}
             - name: LDAP_ADMIN_GROUP
-              value: {{ .Values.ldap.adminGroup }}
+              value: {{ .Values.ldap.adminGroup | quote }}
+            - name: SMTP_SERVER
+              value: {{ .Values.smtp.server | quote }}
+            - name: SMTP_TLS_MODE
+              value: {{ .Values.smtp.tlsMode | quote }}
+            - name: SMTP_USER
+              value: {{ .Values.smtp.user | quote }}
+            - name: SMTP_PASSWORD
+              value: {{ .Values.smtp.password | quote }}
+            - name: SMTP_FROM_EMAIL
+              value: {{ .Values.smtp.fromEmail | quote }}
       {{- with .Values.server.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

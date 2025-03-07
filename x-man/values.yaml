@@ -56,13 +56,19 @@ app:
   # Maximum number of levels of records in messages that will be used to inform
   # users of valid but malformed messages.
   maxRecordDepth: 5
+  # E-MAIL
+  #
+  # E-mail address to forward incoming xdomea messages to.
+  postOfficeEmail: "" # E.g., info@domain.de
 
 server:
   resources: {}
   volumes: []
   volumeMounts: []
+
 gui:
   resources: {}
+
 mongodb:
   # Either provide a URL to an externally managed MongoDB instance or let
   # Kubernetes setup an internal instance (default).
@@ -81,6 +87,7 @@ mongodb:
   volumeClaimResources:
     requests:
       storage: 1Gi
+
 ldap:
   # Either provide data for an externally managed LDAP or Active Directory or
   # let Kubernetes setup a simple internal LDAP server for testing purposes
@@ -100,6 +107,13 @@ ldap:
   image: ghcr.io/rroemhild/docker-test-openldap
   version: master
   resources: {}
+
+smtp:
+  server: "" # E.g., smtp.domain.de:587
+  tlsMode: tls # off (insecure!) | starttls | tls
+  user: "" # optional
+  password: "" # optional
+  fromEmail: "" # E.g., noreply@domain.de
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:
