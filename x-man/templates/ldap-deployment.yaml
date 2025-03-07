@@ -1,19 +1,17 @@
-{{- if not .Values.mongodb.url }}
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: {{ include "x-man.fullname" . }}-mongodb
+  name: {{ include "x-man.fullname" . }}-ldap
   labels:
     {{- include "x-man.labels" . | nindent 4 }}
-    app.kubernetes.io/name: mongodb
-    app.kubernetes.io/version: {{ .Values.mongodb.version | quote }}
-    app.kubernetes.io/component: database
+    app.kubernetes.io/name: docker-test-openldap
+    app.kubernetes.io/version: {{ .Values.ldap.version | quote }}
+    app.kubernetes.io/component: authentication
 spec:
   selector:
     matchLabels:
       {{- include "x-man.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/name: mongodb
-    serviceName: {{ include "x-man.fullname" . }}-mongodb
+      app.kubernetes.io/name: docker-test-openldap
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -22,9 +20,9 @@ spec:
       {{- end }}
       labels:
         {{- include "x-man.labels" . | nindent 8 }}
-        app.kubernetes.io/name: mongodb
-        app.kubernetes.io/version: {{ .Values.mongodb.version | quote }}
-        app.kubernetes.io/component: database
+        app.kubernetes.io/name: docker-test-openldap
+        app.kubernetes.io/version: {{ .Values.ldap.version | quote }}
+        app.kubernetes.io/component: authentication
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -39,41 +37,44 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: mongodb
+        - name: docker-test-openldap
           {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: {{ .Values.mongodb.image }}:{{  .Values.mongodb.version }}
+          image:  "{{ .Values.ldap.image }}:{{ .Values.ldap.version }}"
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
-            - name: mongodb
-              containerPort: 27017
+            - name: ldap
+              containerPort: 10389
+              protocol: TCP
+            - name: ldaps
+              containerPort: 10636
               protocol: TCP
           livenessProbe:
             exec:
               command:
-                - sh
-                - -c
-                - echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+                - ldapsearch
+                - -H
+                - ldap://localhost:10389
+                - -x
+                - -b
+                - "ou=people,dc=planetexpress,dc=com"
+                - cn
           readinessProbe:
             exec:
               command:
-                - sh
-                - -c
-                - echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-          {{- with .Values.mongodb.resources }}
+                - ldapsearch
+                - -H
+                - ldap://localhost:10389
+                - -x
+                - -b
+                - "ou=people,dc=planetexpress,dc=com"
+                - cn
+          {{- with .Values.ldap.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          volumeMounts:
-            - name: data
-              mountPath: /data/db
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              value: {{ .Values.mongodb.user | quote }}
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              value: {{ .Values.mongodb.password | quote }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -86,14 +87,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOncePod" ]
-      {{- with .Values.mongodb.storageClassName }}
-      storageClassName: {{ . }}
-      {{- end }}
-      resources:
-        {{- toYaml .Values.mongodb.volumeClaimResources | nindent 8 }}
-{{- end }}

@@ -2,9 +2,6 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
-
 # The images' container registry, e.g., "docker.io"
 imageRegistry: ""
 # The repository base path for all component images, e.g., "lath/x-man"
@@ -30,10 +27,16 @@ server:
   volumes: []
   volumeMounts: []
 mongodb:
-  # Provide a URL for an externally managed MongoDB instance (optional).
+  # Either provide a URL to an externally managed MongoDB instance or let
+  # Kubernetes setup an internal instance (default).
+  #
+  # -- external configuration
   url: ""
-  # -- if url == ""
-  # Create a stateful set for MongoDB.
+  # -- external and internal configuration
+  user: mongo
+  password: mongo
+  database: app
+  # -- internal configuration
   image: docker.io/mongo
   version: "8.0"
   resources: {}
@@ -41,11 +44,25 @@ mongodb:
   volumeClaimResources:
     requests:
       storage: 1Gi
-  # -- end
-  username: mongo
-  password: mongo
-  database: app
-
+ldap:
+  # Either provide data for an externally managed LDAP or Active Directory or
+  # let Kubernetes setup a simple internal LDAP server for testing purposes
+  # (default).
+  #
+  # -- external configuration
+  url: ""
+  tlsInsecureSkipVerify: false
+  # -- external and internal configuration
+  ldapConfig: default # default | active-directory
+  baseDn: "ou=people,dc=planetexpress,dc=com"
+  user: "cn=admin,dc=planetexpress,dc=com"
+  password: "GoodNewsEveryone"
+  accessGroup: "ship_crew"
+  adminGroup: "admin_staff"
+  # -- internal configuration
+  image: ghcr.io/rroemhild/docker-test-openldap
+  version: master
+  resources: {}
 
 # This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
 serviceAccount:

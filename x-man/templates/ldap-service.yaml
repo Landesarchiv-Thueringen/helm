@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "x-man.fullname" . }}-ldap
+  labels:
+    {{- include "x-man.labels" . | nindent 4 }}
+    app.kubernetes.io/name: docker-test-openldap
+    app.kubernetes.io/version: {{ .Values.ldap.version | quote }}
+    app.kubernetes.io/component: authentication
+spec:
+  type: ClusterIP
+  ports:
+    - port: 10389
+      targetPort: ldap
+      protocol: TCP
+      name: ldap
+    - port: 10636
+      targetPort: ldaps
+      protocol: TCP
+      name: ldaps
+  selector:
+    {{- include "x-man.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: docker-test-openldap

@@ -7,7 +7,6 @@ metadata:
     app.kubernetes.io/name: {{ include "x-man.name" . }}-server
     app.kubernetes.io/component: server
 spec:
-  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "x-man.selectorLabels" . | nindent 6 }}
@@ -79,11 +78,35 @@ spec:
               value: mongodb://{{ include "x-man.fullname" . }}-mongodb:27017
               {{- end }}
             - name: MONGODB_USER
-              value: {{ .Values.mongodb.username }}
+              value: {{ .Values.mongodb.user }}
             - name: MONGODB_PASSWORD
               value: {{ .Values.mongodb.password }}
             - name: MONGODB_DB
               value: {{ .Values.mongodb.database }}
+            - name: LDAP_URL
+              {{- if .Values.ldap.url }}
+              value: {{ .Values.ldap.url }}
+              {{- else }}
+              value: ldap://{{ include "x-man.fullname" . }}-ldap:10389
+              {{- end }}
+            - name: LDAP_CONFIG
+              value: {{ .Values.ldap.ldapConfig }}
+            - name: LDAP_BASE_DN
+              value: {{ .Values.ldap.baseDn }}
+            - name: LDAP_TLS_INSECURE_SKIP_VERIFY
+              {{- if .Values.ldap.url }}
+              value: {{ .Values.ldap.tlsInsecureSkipVerify | quote }}
+              {{- else }}
+              value: "true"
+              {{- end }}
+            - name: LDAP_USER
+              value: {{ .Values.ldap.user }}
+            - name: LDAP_PASSWORD
+              value: {{ .Values.ldap.password }}
+            - name: LDAP_ACCESS_GROUP
+              value: {{ .Values.ldap.accessGroup }}
+            - name: LDAP_ADMIN_GROUP
+              value: {{ .Values.ldap.adminGroup }}
       {{- with .Values.server.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
