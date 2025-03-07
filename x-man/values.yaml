@@ -61,6 +61,8 @@ server:
   resources: {}
   volumes: []
   volumeMounts: []
+gui:
+  resources: {}
 mongodb:
   # Either provide a URL to an externally managed MongoDB instance or let
   # Kubernetes setup an internal instance (default).

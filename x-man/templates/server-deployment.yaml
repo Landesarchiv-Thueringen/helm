@@ -85,6 +85,8 @@ spec:
               value: {{ .Values.app.appraisalLevel }}
             - name: MAX_RECORD_DEPTH
               value: {{ .Values.app.maxRecordDepth | quote }}
+            - name: ARCHIVE_TARGET
+              value: filesystem
             - name: MONGODB_URL
               {{- if .Values.mongodb.url }}
               value: {{ .Values.mongodb.url }}
