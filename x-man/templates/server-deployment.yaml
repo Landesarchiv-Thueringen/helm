@@ -48,11 +48,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /api
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /api
               port: http
           {{- with .Values.server.resources }}
           resources:
@@ -71,6 +71,20 @@ spec:
               value: {{ .Values.timezone }}
             - name: ORIGIN
               value: {{ include "x-man.origin" . }}
+            - name: LOGIN_TOKEN_LIFETIME_DAYS
+              value: {{ .Values.app.loginTokenLifetimeDays | quote }}
+            - name: DELETE_ARCHIVED_SUBMISSIONS_AFTER_DAYS
+              value: {{ .Values.app.deleteArchivedSubmissionsAfterDays | quote }}
+            - name: DELETE_ERRORS_AFTER_DAYS
+              value: {{ .Values.app.deleteErrorsAfterDays | quote }}
+            - name: INSTITUTION_NAME
+              value: {{ .Values.app.institutionName }}
+            - name: INSTITUTION_ABBREVIATION
+              value: {{ .Values.app.institutionAbbreviation }}
+            - name: APPRAISAL_LEVEL
+              value: {{ .Values.app.appraisalLevel }}
+            - name: MAX_RECORD_DEPTH
+              value: {{ .Values.app.maxRecordDepth | quote }}
             - name: MONGODB_URL
               {{- if .Values.mongodb.url }}
               value: {{ .Values.mongodb.url }}
@@ -89,16 +103,16 @@ spec:
               {{- else }}
               value: ldap://{{ include "x-man.fullname" . }}-ldap:10389
               {{- end }}
-            - name: LDAP_CONFIG
-              value: {{ .Values.ldap.ldapConfig }}
-            - name: LDAP_BASE_DN
-              value: {{ .Values.ldap.baseDn }}
             - name: LDAP_TLS_INSECURE_SKIP_VERIFY
               {{- if .Values.ldap.url }}
               value: {{ .Values.ldap.tlsInsecureSkipVerify | quote }}
               {{- else }}
               value: "true"
               {{- end }}
+            - name: LDAP_CONFIG
+              value: {{ .Values.ldap.ldapConfig }}
+            - name: LDAP_BASE_DN
+              value: {{ .Values.ldap.baseDn }}
             - name: LDAP_USER
               value: {{ .Values.ldap.user }}
             - name: LDAP_PASSWORD

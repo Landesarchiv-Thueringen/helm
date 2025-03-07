@@ -13,7 +13,6 @@ spec:
     matchLabels:
       {{- include "x-man.selectorLabels" . | nindent 6 }}
       app.kubernetes.io/name: mongodb
-    serviceName: {{ include "x-man.fullname" . }}-mongodb
   template:
     metadata:
       {{- with .Values.podAnnotations }}

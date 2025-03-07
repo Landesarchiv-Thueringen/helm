@@ -22,6 +22,41 @@ fullnameOverride: ""
 
 timezone: Europe/Berlin
 
+app:
+  # AUTHORIZATION
+  #
+  # Configuration for user authorization at the application.
+  #
+  # Validity period of a user token. A user will stay logged in after entering
+  # their username/password for the time given here.
+  #
+  # Mind that after a user's group memberships are changed, a valid token will
+  # keep its previous permissions.
+  loginTokenLifetimeDays: 365
+  # ROUTINES
+  #
+  # Configuration for reoccurring tasks.
+  #
+  # Time after which to automatically delete successfully archived submission
+  # processes from the application storage and database.
+  deleteArchivedSubmissionsAfterDays: 31
+  # Time after which processing errors that are not associated with a still
+  # existing submission process are deleted.
+  deleteErrorsAfterDays: 31
+  # XDOMEA
+  #
+  # The name and abbreviation of the institution used as sender in generated
+  # xdomea messages.
+  institutionName: Testarchiv
+  institutionAbbreviation: TESA
+  # The level at which the user can make appraisal decisions.
+  #
+  # The option "all" is not yet fully supported for reports. 
+  appraisalLevel: root # root | all
+  # Maximum number of levels of records in messages that will be used to inform
+  # users of valid but malformed messages.
+  maxRecordDepth: 5
+
 server:
   resources: {}
   volumes: []
