@@ -1,10 +1,5 @@
-{{- if .Values.ingress.enabled }}
-x-man frontend will become available on:
-{{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
-  {{- end }}
-{{- end }}
+{{- if .Values.ingress.host }}
+x-man will be available on: http{{ if $.Values.ingress.tls.enabled }}s{{ end }}://{{ .Values.ingress.host }}
 {{- else }}
 You didn't configure an ingress. Use the following commands to connect to the application.
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "x-man.name" . }}-gui,app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")

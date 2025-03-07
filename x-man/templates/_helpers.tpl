@@ -66,7 +66,9 @@ Create the name of the service account to use
 The origin (protocol + host + port) of the deployed application as defined by the first entry of .Values.ingress.hosts
 */}}
 {{- define "x-man.origin" -}}
-{{- with .Values.ingress.hosts -}}
-http{{ if $.Values.ingress.tls }}s{{ end }}://{{ (index . 0).host }}
+{{- if .Values.ingress.host -}}
+http{{ if .Values.ingress.tls.enabled }}s{{ end }}://{{ .Values.ingress.host }}
+{{- else}}
+http://127.0.0.1:8080
 {{- end }}
 {{- end }}
