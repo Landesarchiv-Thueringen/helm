@@ -1,16 +1,18 @@
-{{- if .Values.mongodb.create }}
+{{- if not .Values.mongodb.url }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: {{ include "x-man.fullname" . }}-mongodb
   labels:
-    app.kubernetes.io/component: mongodb
     {{- include "x-man.labels" . | nindent 4 }}
+    app.kubernetes.io/name: mongodb
+    app.kubernetes.io/version: {{ .Values.mongodb.version | quote }}
+    app.kubernetes.io/component: database
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: mongodb
       {{- include "x-man.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/name: mongodb
     serviceName: {{ include "x-man.fullname" . }}-mongodb
   template:
     metadata:
@@ -19,8 +21,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        app.kubernetes.io/component: mongodb
         {{- include "x-man.labels" . | nindent 8 }}
+        app.kubernetes.io/name: mongodb
+        app.kubernetes.io/version: {{ .Values.mongodb.version | quote }}
+        app.kubernetes.io/component: database
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -40,7 +44,7 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          image: {{ .Values.mongodb.image }}
+          image: {{ .Values.mongodb.image }}:{{  .Values.mongodb.version }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - name: mongodb

@@ -30,16 +30,17 @@ server:
   volumes: []
   volumeMounts: []
 mongodb:
-  create: true
-  # -- if create: true
-  image: docker.io/mongo:8.0
+  # Provide a URL for an externally managed MongoDB instance (optional).
+  url: ""
+  # -- if url == ""
+  # Create a stateful set for MongoDB.
+  image: docker.io/mongo
+  version: "8.0"
   resources: {}
   storageClassName: ""
   volumeClaimResources:
     requests:
       storage: 1Gi
-  # -- if create: false
-  url: ""
   # -- end
   username: mongo
   password: mongo

@@ -3,8 +3,9 @@ kind: Service
 metadata:
   name: {{ include "x-man.fullname" . }}-server
   labels:
-    app.kubernetes.io/component: server
     {{- include "x-man.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "x-man.name" . }}-server
+    app.kubernetes.io/component: server
 spec:
   type: ClusterIP
   ports:
@@ -13,5 +14,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/component: server
+    app.kubernetes.io/name: {{ include "x-man.name" . }}-server
     {{- include "x-man.selectorLabels" . | nindent 4 }}

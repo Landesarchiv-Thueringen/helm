@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "x-man.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.nameOverride | trunc 47 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -39,6 +39,7 @@ helm.sh/chart: {{ include "x-man.chart" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
+app.kubernetes.io/part-of: {{ include "x-man.name" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
