@@ -137,6 +137,8 @@ spec:
               value: {{ .Values.smtp.password | quote }}
             - name: SMTP_FROM_EMAIL
               value: {{ .Values.smtp.fromEmail | quote }}
+            - name: BORG_URL
+              value: {{ .Values.borg.url | quote }}
       {{- with .Values.server.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

@@ -130,6 +130,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+borg:
+  # The URL to reach the Borg service (optional).
+  #
+  # When run inside the same cluster, you can use the service name of the server component, e.g., "http://borg-server".
+  url: ""
+
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
