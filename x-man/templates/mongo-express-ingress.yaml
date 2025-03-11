@@ -1,0 +1,33 @@
+{{- if and .Values.mongoExpress.enabled .Values.mongoExpress.ingress.host -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "x-man.fullname" . }}-mongo-express
+  labels:
+    {{- include "x-man.labels" . | nindent 4 }}
+  {{- with .Values.mongoExpress.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.mongoExpress.ingress.className }}
+  ingressClassName: {{ . }}
+  {{- end }}
+  {{- if .Values.mongoExpress.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.mongoExpress.ingress.host | quote }}
+      secretName: {{ .secretName }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.mongoExpress.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "x-man.fullname" $ }}-mongo-express
+                port:
+                  number: 80
+{{- end }}

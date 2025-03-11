@@ -91,6 +91,22 @@ mongodb:
     requests:
       storage: 1Gi
 
+# Debugging UI for MongoDB. Only applicable when using an internal MongoDB
+# instance above (i.e.: mongodb.url == "").
+mongoExpress:
+  enabled: false
+  image: docker.io/mongo-express
+  version: "latest"
+  user: ""
+  password: ""
+  ingress:
+    className: ""
+    annotations: {}
+    host: ""
+    tls:
+      enabled: true
+      secretName: ""
+
 ldap:
   # Either provide data for an externally managed LDAP or Active Directory or
   # let Kubernetes setup a simple internal LDAP server for testing purposes

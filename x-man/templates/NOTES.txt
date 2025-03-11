@@ -1,5 +1,5 @@
 {{- if .Values.ingress.host }}
-x-man will be available on: http{{ if $.Values.ingress.tls.enabled }}s{{ end }}://{{ .Values.ingress.host }}
+The application will be available on: http{{ if $.Values.ingress.tls.enabled }}s{{ end }}://{{ .Values.ingress.host }}.
 {{- else }}
 You didn't configure an ingress. Use the following commands to connect to the application.
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "x-man.name" . }}-gui,app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
@@ -8,7 +8,19 @@ Then visit http://127.0.0.1:8080.
 {{- end }}
 
 {{- if not .Values.ldap.url }}
+
 Log in with
   user:     hermes
   password: hermes
+{{- end }}
+
+{{- if and .Values.mongoExpress.enabled .Values.mongoExpress.ingress.host }}
+
+Mongo Express will be available on  http{{ if $.Values.mongoExpress.ingress.tls.enabled }}s{{ end }}://{{ .Values.mongoExpress.ingress.host }}.
+{{- if .Values.mongoExpress.user }}
+
+Log in with
+  user:     {{ .Values.mongoExpress.user }}
+  password: {{ .Values.mongoExpress.password }}
+{{- end }}
 {{- end }}

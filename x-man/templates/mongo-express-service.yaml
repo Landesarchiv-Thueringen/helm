@@ -1,0 +1,21 @@
+{{- if .Values.mongoExpress.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "x-man.fullname" . }}-mongo-express
+  labels:
+    {{- include "x-man.labels" . | nindent 4 }}
+    app.kubernetes.io/name: mongo-express
+    app.kubernetes.io/version: {{ .Values.mongoExpress.version | quote }}
+    app.kubernetes.io/component: database-debugging
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "x-man.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: mongo-express
+{{- end }}
