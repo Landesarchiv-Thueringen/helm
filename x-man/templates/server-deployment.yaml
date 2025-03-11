@@ -34,6 +34,17 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: server-init
+          image: docker.io/golang:1.23
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          volumeMounts:
+            - name: certs
+              mountPath: /etc/ssl/certs
+            - name: ca-certificates
+              mountPath: /usr/local/share/ca-certificates
+          command:
+            - update-ca-certificates
       containers:
         - name: server
           {{- with .Values.securityContext }}
@@ -58,10 +69,12 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.server.volumeMounts }}
           volumeMounts:
+            - name: certs
+              mountPath: /etc/ssl/certs
+            {{- with .Values.server.volumeMounts }}
             {{- toYaml . | nindent 12 }}
-          {{- end }}
+            {{- end }}
           env:
             - name: PORT
               value: "80"
@@ -161,10 +174,15 @@ spec:
               value: {{ .Values.dimag.user | quote }}
             - name: DIMAG_CORE_PASSWORD
               value: {{ .Values.dimag.password | quote }}
-      {{- with .Values.server.volumes }}
       volumes:
+        - name: certs
+          emptyDir: {}
+        - name: ca-certificates
+          configMap:
+            name: {{ include "x-man.fullname" . }}-ca-certificates
+        {{- with .Values.server.volumes }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
