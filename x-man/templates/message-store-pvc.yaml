@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "x-man.fullname" . }}-message-store
+  labels:
+    {{- include "x-man.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    {{- toYaml .Values.messageStore.resources | nindent 4 }}
+  {{- with .Values.messageStore.storageClassName }}
+  storageClassName: {{ . }}
+  {{- end }}
+  {{- with .Values.messageStore.selector }}
+  selector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

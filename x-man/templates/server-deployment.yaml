@@ -72,6 +72,8 @@ spec:
           volumeMounts:
             - name: certs
               mountPath: /etc/ssl/certs
+            - name: message-store
+              mountPath: /xman/message_store
             {{- with .Values.server.volumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -180,6 +182,9 @@ spec:
         - name: ca-certificates
           configMap:
             name: {{ include "x-man.fullname" . }}-ca-certificates
+        - name: message-store
+          persistentVolumeClaim:
+            claimName:  {{ include "x-man.fullname" . }}-message-store
         {{- with .Values.server.volumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
