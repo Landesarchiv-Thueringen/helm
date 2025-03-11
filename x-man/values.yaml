@@ -66,6 +66,9 @@ server:
   volumes: []
   volumeMounts: []
 
+report:
+  resources: {}
+
 gui:
   resources: {}
 

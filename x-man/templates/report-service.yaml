@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "x-man.fullname" . }}-report
+  labels:
+    {{- include "x-man.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "x-man.name" . }}-report
+    app.kubernetes.io/component: report
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "x-man.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ include "x-man.name" . }}-report

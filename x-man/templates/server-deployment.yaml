@@ -89,6 +89,8 @@ spec:
               value: {{ .Values.app.postOfficeEmail | quote }}
             - name: ARCHIVE_TARGET
               value: filesystem
+            - name: REPORT_URL
+              value: http://{{ include "x-man.fullname" . }}-report
             - name: MONGODB_URL
               {{- if .Values.mongodb.url }}
               value: {{ .Values.mongodb.url | quote }}
