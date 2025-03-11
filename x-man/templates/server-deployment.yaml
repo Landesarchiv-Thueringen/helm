@@ -87,8 +87,6 @@ spec:
               value: {{ .Values.app.maxRecordDepth | quote }}
             - name: POST_OFFICE_EMAIL
               value: {{ .Values.app.postOfficeEmail | quote }}
-            - name: ARCHIVE_TARGET
-              value: filesystem
             - name: REPORT_URL
               value: http://{{ include "x-man.fullname" . }}-report
             - name: MONGODB_URL
@@ -130,7 +128,11 @@ spec:
             - name: SMTP_SERVER
               value: {{ .Values.smtp.server | quote }}
             - name: SMTP_TLS_MODE
+              {{- if not .Values.smtp.tlsMode }}
+              value: "off"
+              {{- else }}
               value: {{ .Values.smtp.tlsMode | quote }}
+              {{- end }}
             - name: SMTP_USER
               value: {{ .Values.smtp.user | quote }}
             - name: SMTP_PASSWORD
@@ -139,6 +141,26 @@ spec:
               value: {{ .Values.smtp.fromEmail | quote }}
             - name: BORG_URL
               value: {{ .Values.borg.url | quote }}
+            - name: ARCHIVE_TARGET
+              {{- if .Values.dimag.sftpUrl }}
+              value: dimag
+              {{- else }}
+              value: filesystem
+              {{- end }}
+            - name: DIMAG_SFTP_SERVER_URL
+              value: {{ .Values.dimag.sftpUrl | quote }}
+            - name: DIMAG_SFTP_DIR
+              value: {{ .Values.dimag.sftpDir | quote }}
+            - name: DIMAG_SFTP_USER
+              value: {{ .Values.dimag.sftpUser | quote }}
+            - name: DIMAG_SFTP_PASSWORD
+              value: {{ .Values.dimag.sftpPassword | quote }}
+            - name: DIMAG_CORE_SOAP_ENDPOINT
+              value: {{ .Values.dimag.soapEndpoint | quote }}
+            - name: DIMAG_CORE_USER
+              value: {{ .Values.dimag.user | quote }}
+            - name: DIMAG_CORE_PASSWORD
+              value: {{ .Values.dimag.password | quote }}
       {{- with .Values.server.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}

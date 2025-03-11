@@ -136,6 +136,21 @@ borg:
   # When run inside the same cluster, you can use the service name of the server component, e.g., "http://borg-server".
   url: ""
 
+# How to connect to the DIMAG "Kernmodul" (optional).
+#
+# If omitted, archived data will be written to the filesystem under `/xman/archive`.
+dimag:
+  sftpUrl: ""
+  # The directory configured in DIMAG for $AbsPathSftp, relative to the SFTP
+  # user's root directory.
+  sftpDir: ""
+  sftpUser: ""
+  sftpPassword: ""
+  soapEndpoint: ""
+  # Service user configured in "Kernmodul".
+  user: ""
+  password: ""
+
 # This is for setting Kubernetes Annotations to a Pod.
 # For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 podAnnotations: {}
