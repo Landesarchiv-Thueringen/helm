@@ -108,24 +108,15 @@ mongoExpress:
       secretName: ""
 
 ldap:
-  # Either provide data for an externally managed LDAP or Active Directory or
-  # let Kubernetes setup a simple internal LDAP server for testing purposes
-  # (default).
-  #
-  # -- external configuration
+  # Provide data for an externally managed LDAP or Active Directory.
   url: ""
   tlsInsecureSkipVerify: false
-  # -- external and internal configuration
   ldapConfig: default # default | active-directory
-  baseDn: "ou=people,dc=planetexpress,dc=com"
-  user: "cn=admin,dc=planetexpress,dc=com"
-  password: "GoodNewsEveryone"
-  accessGroup: "ship_crew"
-  adminGroup: "admin_staff"
-  # -- internal configuration
-  image: ghcr.io/rroemhild/docker-test-openldap
-  version: master
-  resources: {}
+  baseDn: ""
+  user: ""
+  password: ""
+  accessGroup: ""
+  adminGroup: ""
 
 smtp:
   server: "" # E.g., smtp.domain.de:587

@@ -1,0 +1,22 @@
+ldap:
+  image: ghcr.io/rroemhild/docker-test-openldap
+  version: master
+  resources: {}
+
+x-man:
+  ldap:
+    url: ldap://{{ include "x-man.fullname" . }}-ldap:10389
+    tlsInsecureSkipVerify: true
+    ldapConfig: default
+    baseDn: "ou=people,dc=planetexpress,dc=com"
+    user: "cn=admin,dc=planetexpress,dc=com"
+    password: "GoodNewsEveryone"
+    accessGroup: "ship_crew"
+    adminGroup: "admin_staff"
+
+# Note that this is not passed down to x-man automatically. Also set x-man.serviceAccount.
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""

@@ -117,17 +117,9 @@ spec:
             - name: MONGODB_DB
               value: {{ .Values.mongodb.database | quote }}
             - name: LDAP_URL
-              {{- if .Values.ldap.url }}
-              value: {{ .Values.ldap.url | quote }}
-              {{- else }}
-              value: ldap://{{ include "x-man.fullname" . }}-ldap:10389
-              {{- end }}
+              value: {{ tpl .Values.ldap.url . | quote}}
             - name: LDAP_TLS_INSECURE_SKIP_VERIFY
-              {{- if .Values.ldap.url }}
               value: {{ .Values.ldap.tlsInsecureSkipVerify | quote }}
-              {{- else }}
-              value: "true"
-              {{- end }}
             - name: LDAP_CONFIG
               value: {{ .Values.ldap.ldapConfig | quote }}
             - name: LDAP_BASE_DN
