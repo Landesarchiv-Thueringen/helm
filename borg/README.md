@@ -40,15 +40,7 @@ imageTag: "dev"
 
 # Domain for making the installation available.
 ingress:
-  enabled: true
-  hosts:
-    - host: borg.my-k8s-cluster.de
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - hosts:
-        - borg.my-k8s-cluster.de
+  host: borg.my-k8s-cluster.de
 ```
 
 ## Installation
