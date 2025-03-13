@@ -84,7 +84,10 @@ app:
 # The application's backend service.
 server:
   resources: {}
-  # Define custom volume bindings to use as transfer directory (optional).
+  # Define custom volume bindings to use as transfer directory or archive target (optional).
+  #
+  # - Transfer directory: Choose any path that does not yet exist and configure it in the administration UI of x-man.
+  # - Archive target: /xman/archive.
   volumes: []
   volumeMounts: []
 
